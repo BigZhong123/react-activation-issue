@@ -1,10 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
-import {
-  useLocation,
-  useNavigate,
-  useOutlet,
-} from "react-router-dom";
+import { useLocation, useNavigate, useOutlet } from "react-router-dom";
 import KeepAlive from "react-activation";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -14,9 +10,12 @@ const App = () => {
   const dispatch = useDispatch();
   const { id } = useSelector((state: any) => state.app);
 
-  const count = 2;
-
   const location = useLocation();
+
+  useEffect(() => {
+    // 点击时候设置id的时候打开这个 初始化设置 可以缓存成功
+    dispatch.app.setId(location.pathname);
+  }, []);
 
   useEffect(() => {
     // const uri = location.pathname + location.search;
@@ -30,40 +29,28 @@ const App = () => {
     // console.log(state)
     // console.log(aliveMap)
 
-    const pathname = location.pathname;
-    if (pathname === "/home") {
-      dispatch.app.setId("1");
-    } else {
-      dispatch.app.setId("2");
-    }
+    dispatch.app.setId(location.pathname);
   }, [location.pathname]);
 
   const navigate = useNavigate();
-  const go = (id: number) => {
+  const go = (url: string) => {
     // 使用这种做法可以缓存成功
-    // dispatch.app.setId(id+'')
+    // dispatch.app.setId(url)
 
-    if (id < 1) {
-      navigate("/hero");
-      return;
-    }
-    navigate("/home");
+    navigate(url);
   };
 
   return (
     <div>
       <hr />
       <div>这是son的内容</div>
-      {!(window as any).__POWERED_BY_QIANKUN__
-        ? Array(count)
-            .fill("")
-            .map((value, index) => (
-              <button key={index} onClick={() => go(index)}>
-                {index}
-              </button>
-            ))
-        : null}
-        <p>store里面的id为{id}</p>
+      {!(window as any).__POWERED_BY_QIANKUN__ ? (
+        <div>
+          <button onClick={() => go("/home")}>home</button>
+          <button onClick={() => go("/hero")}>hero</button>
+        </div>
+      ) : null}
+      <p>store里面的id为{id}</p>
       <KeepAlive name={id} id={id}>
         {outlet}
       </KeepAlive>
