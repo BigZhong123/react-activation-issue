@@ -51,6 +51,7 @@ const App = () => {
         </div>
       ) : null}
       <p>store里面的id为{id}</p>
+      {/* 要做缓存刷新与清空 需要复制name与id */}
       <KeepAlive name={id} id={id}>
         {outlet}
       </KeepAlive>
